@@ -1,6 +1,6 @@
 {
   "name": "L20N-node",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A small L20N translation server hosted in node.js to enable ASP.NET apps to use L20N translations.",
   "main": "index.js",
   "scripts": {

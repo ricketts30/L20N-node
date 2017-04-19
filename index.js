@@ -1,11 +1,11 @@
 // index.js
 
-console.log('L20N-node is starting ...');
+console.log('launching L20N-node');
 
 const express = require('express');  
 var bodyParser = require('body-parser');
+var fs = require('fs');
 
-console.log('l20n section (starts) ...');
 const l20n = require('L20N');  
 //console.log(l20n);
 // see: 
@@ -14,47 +14,53 @@ const l20n = require('L20N');
 // load some stuff 
 // useIsolating:true will wrap variable bits in special unicode characters
 // "Welcome, \u2068Anna\u2069, to \u2068Foo 3000\u2069!"
-const ctx = new Intl.MessageContext('en-US', { useIsolating: false });
-//
-const errors = ctx.addMessages(`
-brand-name = Foo 3000
-welcome    = Welcome, { $name }, to { brand-name }!
-`);
 
-if (errors.length) {
-  // handle syntax errors
-  // 
+var dict = {};
+var dictErrors = {};
+var dictErrorCount = 0;
+
+// normally we don't do stuff synchronously in node.js
+// ... but it's OK for one-time-only setup activities.
+var files = fs.readdirSync('./locales/');
+for(var i = 0, l = files.length; i < l; i++){
+	console.log('file:  ' + files[i]);
+	// work out the culture
+	var split = files[i].split('.');
+	var cultureCode = split[0];
+	var fileText = fs.readFileSync('./locales/' + files[i], 'utf8');
+	var mCtx = new Intl.MessageContext(cultureCode, { useIsolating: false });
+	dict[cultureCode] = mCtx;
+	var dictError = mCtx.addMessages(fileText);
+	dictErrorCount += dictError.length;
+	dictErrors[cultureCode] = dictError;
 }
 
-const welcome = ctx.messages.get('welcome');
-
-console.log('L20N section (ends) ...');
+if(dictErrorCount > 0){
+	// handle the syntax errors
+	console.log(`!!! ERROR COUNT IS ${dictErrorCount} !!!`);
+}
 
 const app = express();
-console.log('added express server ...');
 const port = 3000;
 
 // use the bodyParser middleware to process the JSON
 // parse application/json 
 app.use(bodyParser.json())
-console.log('added application/json processing ...');
 
 app.post('/', (request, response) => {  
-  console.log('/ POST request');
   var output = "nothing found";
-  console.log(request.body); 
   if(request.body != null){
-  	var thing = ctx.messages.get(request.body.resource);
+    var cc = request.body.culture;
+    var ctx = dict[cc];
+    var thing = dict[cc].messages.get(request.body.resource);
   	output = ctx.format(thing, request.body.payload);
   }
   response.json({
-    msg: output,
-    dt: new Date(),
+    msg: output
   });
 });
 
 app.get('/', (request, response) => {  
-  console.log('/ GET request');
   response.send('this app only responds to POST operations at /');
 });
 
@@ -62,6 +68,5 @@ app.listen(port, (err) => {
   if (err) {
     return console.log('something bad happened', err);
   }
-
   console.log(`server is listening on ${port}`);
 });

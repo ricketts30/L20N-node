@@ -1,0 +1,17 @@
+{
+  "name": "L20N-node",
+  "version": "1.0.0",
+  "description": "A small L20N translation server hosted in node.js to enable ASP.NET apps to use L20N translations.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "Howard Geraint Ricketts",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "l20n": "^4.0.0-beta.1"
+  }
+}

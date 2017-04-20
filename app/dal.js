@@ -20,11 +20,11 @@ function setConnection(c) {
 }
 
 function appStart(){
-  callEventInsert(1, null, null, null, null);  
+  callEventInsert(1, null, null, null, null);
 }
 
 function startupError(title, details){
-  callEventInsert(2, null, null, title, null);  
+  callEventInsert(2, null, null, title, details);  
 }
 
 function cultureNotFound(culture){
@@ -40,6 +40,7 @@ function genericError(title, details){
 }
 
 function callEventInsert(code, culture, resource, error, details) {
+	sql.close();
 	sql.connect(connection).then(pool => {
 		// stored procedure
 		return pool.request()

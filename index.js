@@ -20,7 +20,6 @@ const app = express();
 app.use(bodyParser.json())
 
 app.post('/', (request, response) => { 
-  console.log('JJJJJ');
   server.processRequest(request, response);
 });
 

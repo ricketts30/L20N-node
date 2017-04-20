@@ -13,14 +13,15 @@ var dict = {};
 var dictErrors = {};
 var dictErrorCount = 0;
 
-function start(){
+function start(portNo){
   dal.appStart();
 
   // normally we don't do stuff synchronously in node.js
   // ... but it's OK for one-time-only setup activities.
   var files = fs.readdirSync('./locales/');
   for(var i = 0, l = files.length; i < l; i++){
-	console.log('file:  ' + files[i]);
+	console.log('file: ' + files[i]);
+	// dal.appStart('loading file:  ' + files[i]);
 	// work out the culture
 	var split = files[i].split('.');
 	var cultureCode = split[0];
@@ -28,8 +29,11 @@ function start(){
 	var mCtx = new Intl.MessageContext(cultureCode, { useIsolating: false });
 	dict[cultureCode] = mCtx;
 	var dictError = mCtx.addMessages(fileText);
+	console.log(dictError);
+        for(var idx = 0, limit = dictError.length; idx < limit; idx++){
+		//dal.startupError('file:  ' + files[i], 'stuu');	
+	}
 	dictErrorCount += dictError.length;
-	dictErrors[cultureCode] = dictError;
   }
 
   if(dictErrorCount > 0){
@@ -40,8 +44,7 @@ function start(){
 }
 
 function processRequest(request, response){
-  console.log('== == == ==');
-  var output = "nothing found";
+  var output = null;
   if(request.body != null){
     var cc = request.body.culture;
     var ctx = dict[cc];

@@ -6,6 +6,14 @@ const express = require('express');
 var bodyParser = require('body-parser');
 var fs = require('fs');
 
+var dal = require('./app/dal');
+
+dal.setConnection("mssql://USERNAME:PASSWORD@SERVERNAME/DBNAME");
+
+dal.appStart();
+
+//dal.genericError("the titles", "the details");
+
 const l20n = require('L20N');  
 //console.log(l20n);
 // see: 

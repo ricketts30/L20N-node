@@ -41,7 +41,7 @@ if(dictErrorCount > 0){
 }
 
 const app = express();
-const port = 3000;
+const port = 1910;
 
 // use the bodyParser middleware to process the JSON
 // parse application/json 

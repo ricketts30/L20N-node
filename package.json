@@ -12,6 +12,7 @@
   "dependencies": {
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
-    "l20n": "^4.0.0-beta.1"
+    "l20n": "^4.0.0-beta.1",
+    "mssql": "^4.0.2"
   }
 }
